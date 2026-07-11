@@ -129,6 +129,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const wheel = $('scrollWheel');
+  let wheelLastY = 0;
+
+  wheel.addEventListener('touchstart', e => {
+    wheelLastY = e.touches[0].clientY;
+  }, { passive: true });
+
+  wheel.addEventListener('touchmove', e => {
+    e.preventDefault();
+    const deltaY = wheelLastY - e.touches[0].clientY;
+    wheelLastY = e.touches[0].clientY;
+    state.zoom = Math.max(MIN_Z, Math.min(MAX_Z, state.zoom * (1 + deltaY * 0.005)));
+    render();
+  }, { passive: false });
+
+  wheel.addEventListener('mousedown', e => {
+    e.preventDefault();
+    let lastY = e.clientY;
+    const onMove = e => {
+      const deltaY = lastY - e.clientY;
+      lastY = e.clientY;
+      state.zoom = Math.max(MIN_Z, Math.min(MAX_Z, state.zoom * (1 + deltaY * 0.005)));
+      render();
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey) return;
     if (e.key === '+' || e.key === '=') {

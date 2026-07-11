@@ -54,6 +54,11 @@ input[type="file"] { display: none; }
   color: #888;
 }
 
+.viewer-wrap {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
 .viewer {
   flex: 1;
   display: flex;
@@ -152,6 +157,39 @@ input[type="file"] { display: none; }
 .ctrl-row input[type="range"] { width: 80px; accent-color: #6c63ff; }
 .zoom-info { font-size: 12px; color: #555; font-variant-numeric: tabular-nums; }
 
+.scroll-wheel {
+  display: none;
+  flex-shrink: 0;
+  width: 64px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  touch-action: none;
+  cursor: ns-resize;
+  user-select: none;
+  border-left: 1px solid #333;
+  background: repeating-linear-gradient(
+    to bottom,
+    #2a2a4a 0px, #2a2a4a 2px,
+    #1a1a2e 2px, #1a1a2e 9px
+  );
+}
+.scroll-wheel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, transparent 20%, rgba(255,255,255,0.04) 50%, rgba(0,0,0,0.25) 80%, rgba(0,0,0,0.45) 100%);
+  pointer-events: none;
+}
+.scroll-wheel-label {
+  color: #555;
+  font-size: 22px;
+  font-weight: 300;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .rotate-prompt {
   display: none;
   position: fixed;
@@ -178,6 +216,10 @@ input[type="file"] { display: none; }
   50% { transform: rotate(90deg); }
 }
 
-@media (orientation: portrait) {
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+  .scroll-wheel { display: flex; }
+}
+
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
   .rotate-prompt { display: flex; }
 }
