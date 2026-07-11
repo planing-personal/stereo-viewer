@@ -9,17 +9,22 @@
 <body>
 
 <div class="toolbar">
-  <button id="loadLeftBtn">Load Left</button>
-  <input type="file" id="inpL" accept="image/*">
-  <button id="loadRightBtn">Load Right</button>
-  <input type="file" id="inpR" accept="image/*">
-  <button id="swapBtn">Swap</button>
-  <div class="ctrl-row">
-    <label>Size</label>
-    <input type="range" id="sizeRng" min="5" max="100" value="50">
-    <span id="sizeVal">50%</span>
+  <div class="toolbar-group"></div>
+  <div class="toolbar-group toolbar-group-center">
+    <button id="loadLeftBtn">Load Left</button>
+    <input type="file" id="inpL" accept="image/*">
+    <button id="swapBtn">Swap</button>
+    <input type="file" id="inpR" accept="image/*">
+    <button id="loadRightBtn">Load Right</button>
   </div>
-  <span class="zoom-info">Zoom: <span id="zoomVal">1.00</span>x</span>
+  <div class="toolbar-group toolbar-group-right">
+    <div class="ctrl-row">
+      <label>Size</label>
+      <input type="range" id="sizeRng" min="5" max="100" value="50">
+      <span id="sizeVal">50%</span>
+    </div>
+    <span class="zoom-info">Zoom: <span id="zoomVal">1.00</span>x</span>
+  </div>
 </div>
 
 <div class="viewer">
