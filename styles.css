@@ -219,6 +219,9 @@ input[type="file"] { display: none; }
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   .scroll-wheel { display: flex; }
   .panels-wrapper { min-width: 500px; }
+  .toolbar { padding-right: 80px; }
+  .zoom-info { position: absolute; right: 0; padding-inline: 18px; }
+  .zoom-info #zoomText { display: none; }
 }
 
 @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
