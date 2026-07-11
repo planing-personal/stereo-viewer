@@ -218,6 +218,7 @@ input[type="file"] { display: none; }
 
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   .scroll-wheel { display: flex; }
+  .panels-wrapper { min-width: 500px; }
 }
 
 @media (hover: none) and (pointer: coarse) and (orientation: portrait) {
