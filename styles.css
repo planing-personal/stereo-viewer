@@ -96,3 +96,29 @@ input[type="file"] { display: none; }
 .ctrl-row { display: flex; align-items: center; gap: 6px; }
 .ctrl-row input[type="range"] { width: 80px; accent-color: #6c63ff; }
 .zoom-info { font-size: 12px; color: #555; margin-left: auto; font-variant-numeric: tabular-nums; }
+
+.rotate-prompt {
+  display: none;
+  position: fixed; inset: 0; z-index: 999;
+  background: #0a0a14; color: #888;
+  align-items: center; justify-content: center;
+}
+.rotate-prompt-inner {
+  text-align: center;
+}
+.rotate-prompt-inner svg {
+  margin-bottom: 16px;
+  animation: rotate-phone 2s ease-in-out infinite;
+}
+.rotate-prompt-inner p {
+  font-size: 16px;
+}
+
+@keyframes rotate-phone {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
+
+@media (orientation: portrait) {
+  .rotate-prompt { display: flex; }
+}
