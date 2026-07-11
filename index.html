@@ -9,14 +9,14 @@
 <body>
 
 <div class="toolbar">
-  <button onclick="document.getElementById('inpL').click()">Load Left</button>
-  <input type="file" id="inpL" accept="image/*" onchange="load(0, this)">
-  <button onclick="document.getElementById('inpR').click()">Load Right</button>
-  <input type="file" id="inpR" accept="image/*" onchange="load(1, this)">
-  <button onclick="swap()">Swap</button>
+  <button id="loadLeftBtn">Load Left</button>
+  <input type="file" id="inpL" accept="image/*">
+  <button id="loadRightBtn">Load Right</button>
+  <input type="file" id="inpR" accept="image/*">
+  <button id="swapBtn">Swap</button>
   <div class="ctrl-row">
     <label>Size</label>
-    <input type="range" id="sizeRng" min="5" max="100" value="50" oninput="setSize(this.value)">
+    <input type="range" id="sizeRng" min="5" max="100" value="50">
     <span id="sizeVal">50%</span>
   </div>
   <span class="zoom-info">Zoom: <span id="zoomVal">1.00</span>x</span>
