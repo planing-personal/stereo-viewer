@@ -25,26 +25,30 @@ function render() {
 }
 
 function loadImage(idx, file) {
-  if (!file) return;
+  if (!file)
+    return;
 
   const r = new FileReader();
 
   r.onload = e => {
     const panel = state.panels[idx];
+
     const wrap = $(panel.wrapId);
     wrap.innerHTML = '';
+
     const img = document.createElement('img');
     img.src = e.target.result;
     img.alt = '';
     img.draggable = false;
+
     wrap.appendChild(img);
+
     panel.src = e.target.result;
 
     const p = $(panel.id);
-    const lbl = p.querySelector('.panel-label');
-    const hint = p.querySelector('.panel-hint');
-    if (lbl) lbl.style.display = 'none';
-    if (hint) hint.style.display = 'none';
+    const hintContainer = p.querySelector('.hint-container');
+    if (hintContainer)
+       hintContainer.style.display = 'none';
 
     render();
   };
@@ -78,8 +82,10 @@ function swap() {
   state.panels.forEach(p => {
     const el = $(p.id);
     const hasImg = !!el.querySelector('img');
-    el.querySelector('.panel-label').style.display = hasImg ? 'none' : '';
-    el.querySelector('.panel-hint').style.display = hasImg ? 'none' : '';
+    
+    const hintContainer = el.querySelector('.hint-container');
+    if (hintContainer)
+       hintContainer.style.display = hasImg ? 'none' : '';
   });
 
   render();

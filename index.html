@@ -11,11 +11,7 @@
 <div class="toolbar">
   <div class="toolbar-group"></div>
   <div class="toolbar-group toolbar-group-center">
-    <button id="loadLeftBtn">Load Left</button>
-    <input type="file" id="inpL" accept="image/*">
     <button id="swapBtn">Swap</button>
-    <input type="file" id="inpR" accept="image/*">
-    <button id="loadRightBtn">Load Right</button>
   </div>
   <div class="toolbar-group toolbar-group-right">
     <div class="ctrl-row">
@@ -33,13 +29,33 @@
   <div class="viewer">
     <div class="panels-wrapper" id="pw">
       <div class="panel" id="p0">
-        <span class="panel-label">Left</span>
-        <span class="panel-hint">Drop LEFT image here</span>
+        <div class="hint-container">
+          <div class="panel-label-wrapper">
+            <span class="panel-label">Left</span>
+          </div>
+          <div class="panel-hint-wrapper">
+            <span class="panel-hint">Drop LEFT image here</span>
+          </div>
+          <div class="panel-button-wrapper">
+            <button id="loadLeftBtn" class="panel-button">Upload</button>
+            <input type="file" id="inpL" accept="image/*">
+          </div>
+        </div>
         <div class="image-wrap" id="w0"></div>
       </div>
       <div class="panel" id="p1">
-        <span class="panel-label">Right</span>
-        <span class="panel-hint">Drop RIGHT image here</span>
+        <div class="hint-container">
+          <div class="panel-label-wrapper">
+            <span class="panel-label">Right</span>
+          </div>
+          <div class="panel-hint-wrapper">
+            <span class="panel-hint">Drop RIGHT image here</span>
+          </div>
+          <div class="panel-button-wrapper">
+            <button id="loadRightBtn" class="panel-button">Upload</button>
+            <input type="file" id="inpR" accept="image/*">
+          </div>
+        </div>
         <div class="image-wrap" id="w1"></div>
       </div>
     </div>
