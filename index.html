@@ -9,9 +9,11 @@
 </head>
 <body class="font-sans bg-[#111] text-[#ccc] flex flex-col select-none h-screen overflow-hidden">
 
-<div class="toolbar-row flex shrink-0">
+<div class="toolbar-menu-wrapper shrink-0 relative">
+<div class="toolbar-row flex">
   <div class="toolbar flex-1 flex items-center px-4 py-2 bg-[#1a1a2e] border-b border-[#333]">
     <div class="flex-1 flex items-center gap-2.5">
+      <button id="menuBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">☰</button>
       <button id="fullscreenBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-3 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Fullscreen</button>
     </div>
     <div class="flex-1 flex items-center gap-2.5 justify-center">
@@ -29,6 +31,21 @@
     <span id="zoomText">Zoom: </span>
     <span id="zoomVal">1.00</span>
   </div>
+</div>
+
+<div id="menuPanel" class="menu-panel">
+  <div class="menu-section">
+    <div class="menu-section-header" id="samplesHeader">Samples</div>
+    <div id="samplesList" class="menu-section-items"></div>
+  </div>
+  <div class="menu-section">
+    <div class="menu-section-header" id="historyHeader">History</div>
+    <div id="historyList" class="menu-section-items"></div>
+    <div class="menu-section-actions" id="historyActions">
+      <button id="clearHistoryBtn" class="menu-action-btn">Clear History</button>
+    </div>
+  </div>
+</div>
 </div>
 
 <div class="viewer-wrap flex-1 flex overflow-hidden">
@@ -79,6 +96,7 @@
     <p class="text-base">Rotate your device to landscape</p>
   </div>
 </div>
-<script src="app.js"></script>
+  <script src="samples/samples.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -9,6 +9,7 @@ const state = {
 };
 
 const MIN_Z = 1, MAX_Z = 50;
+const HISTORY_KEY = 'stereo-viewer-history';
 
 const $ = id => document.getElementById(id);
 const pw = $('pw');
@@ -23,25 +24,30 @@ function render() {
   zoomVal.textContent = state.zoom.toFixed(2);
 }
 
+function setImage(idx, src) {
+  const panel = state.panels[idx];
+  const wrap = $(panel.wrapId);
+  wrap.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = '';
+  img.draggable = false;
+  wrap.appendChild(img);
+  panel.src = src;
+
+  const p = $(panel.id);
+  const hintContainer = p.querySelector('.hint-container');
+  if (hintContainer) hintContainer.style.display = 'none';
+
+  render();
+}
+
 function loadImage(idx, file) {
   if (!file) return;
   const r = new FileReader();
   r.onload = e => {
-    const panel = state.panels[idx];
-    const wrap = $(panel.wrapId);
-    wrap.innerHTML = '';
-    const img = document.createElement('img');
-    img.src = e.target.result;
-    img.alt = '';
-    img.draggable = false;
-    wrap.appendChild(img);
-    panel.src = e.target.result;
-
-    const p = $(panel.id);
-    const hintContainer = p.querySelector('.hint-container');
-    if (hintContainer) hintContainer.style.display = 'none';
-
-    render();
+    setImage(idx, e.target.result);
+    checkSaveHistory();
   };
   r.readAsDataURL(file);
 }
@@ -81,6 +87,158 @@ function setSize(v) {
   pw.style.width = v + '%';
 }
 
+function resizeImage(dataUrl, maxDim, quality) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxDim) { h *= maxDim / w; w = maxDim; } }
+      else { if (h > maxDim) { w *= maxDim / h; h = maxDim; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+}
+
+function checkSaveHistory() {
+  if (state.panels[0].src && state.panels[1].src) {
+    saveHistory();
+  }
+}
+
+async function saveHistory() {
+  try {
+    const [thumb, leftImg, rightImg] = await Promise.all([
+      resizeImage(state.panels[0].src, 120, 0.5),
+      resizeImage(state.panels[0].src, 800, 0.7),
+      resizeImage(state.panels[1].src, 800, 0.7),
+    ]);
+    const history = getHistory();
+    history.unshift({
+      id: Date.now().toString(),
+      thumbnail: thumb,
+      leftImageUrl: leftImg,
+      rightImageUrl: rightImg,
+      description: '',
+      timestamp: Date.now(),
+    });
+    while (history.length > 3) history.pop();
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    renderHistory();
+  } catch (e) {
+    console.warn('Failed to save history:', e);
+  }
+}
+
+function getHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+  } catch {
+    return [];
+  }
+}
+
+function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY);
+  renderHistory();
+}
+
+function deleteHistoryItem(id) {
+  const history = getHistory().filter(h => h.id !== id);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function updateHistoryDescription(id, desc) {
+  const history = getHistory();
+  const item = history.find(h => h.id === id);
+  if (item) { item.description = desc; localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
+}
+
+function renderHistory() {
+  const list = $('historyList');
+  const history = getHistory();
+  list.innerHTML = '';
+  if (!history.length) {
+    list.innerHTML = '<div class="menu-empty">No history yet</div>';
+    return;
+  }
+  history.forEach(h => {
+    const item = document.createElement('div');
+    item.className = 'menu-item';
+    item.innerHTML = `
+      <img src="${h.thumbnail}" alt="" class="menu-item-thumb">
+      <div class="menu-item-info">
+        <input class="menu-item-desc-input" value="${escapeHtml(h.description)}" placeholder="Add description...">
+        <span class="menu-item-time">${new Date(h.timestamp).toLocaleString()}</span>
+      </div>
+      <button class="menu-item-del" data-id="${h.id}">×</button>
+    `;
+    item.addEventListener('click', e => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      setImage(0, h.leftImageUrl);
+      setImage(1, h.rightImageUrl);
+      closeMenu();
+    });
+    const input = item.querySelector('.menu-item-desc-input');
+    input.addEventListener('click', e => e.stopPropagation());
+    input.addEventListener('change', () => updateHistoryDescription(h.id, input.value));
+    const delBtn = item.querySelector('.menu-item-del');
+    delBtn.addEventListener('click', e => { e.stopPropagation(); deleteHistoryItem(h.id); });
+    list.appendChild(item);
+  });
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function renderSamples(samples) {
+  const list = $('samplesList');
+  list.innerHTML = '';
+  if (!samples.length) {
+    list.innerHTML = '<div class="menu-empty">No samples available</div>';
+    return;
+  }
+  samples.forEach(s => {
+    const item = document.createElement('div');
+    item.className = 'menu-item';
+    item.innerHTML = `
+      <img src="${s.thumbnail}" alt="" class="menu-item-thumb">
+      <div class="menu-item-info">
+        <span class="menu-item-desc">${escapeHtml(s.description)}</span>
+      </div>
+    `;
+    item.addEventListener('click', () => {
+      setImage(0, s.leftImageUrl);
+      setImage(1, s.rightImageUrl);
+      closeMenu();
+    });
+    list.appendChild(item);
+  });
+}
+
+function loadSamples() {
+  renderSamples(typeof SAMPLES !== 'undefined' ? SAMPLES : []);
+}
+
+let menuOpen = false;
+
+function toggleMenu() {
+  menuOpen = !menuOpen;
+  $('menuPanel').classList.toggle('open', menuOpen);
+}
+
+function closeMenu() {
+  menuOpen = false;
+  $('menuPanel').classList.remove('open');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   $('loadLeftBtn').addEventListener('click', () => $('inpL').click());
   $('loadRightBtn').addEventListener('click', () => $('inpR').click());
@@ -88,6 +246,29 @@ document.addEventListener('DOMContentLoaded', () => {
   $('inpR').addEventListener('change', e => loadFromInput(1, e.target));
   $('swapBtn').addEventListener('click', swap);
   $('sizeRng').addEventListener('input', e => setSize(e.target.value));
+  $('menuBtn').addEventListener('click', e => { e.stopPropagation(); toggleMenu(); });
+
+  document.addEventListener('click', e => {
+    if (menuOpen && !e.target.closest('#menuPanel') && e.target.id !== 'menuBtn') closeMenu();
+  });
+
+  const openSection = (headerId, listId, actionsId) => {
+    $(headerId).classList.add('open');
+    $(listId).classList.add('open');
+    if (actionsId) $(actionsId).classList.add('open');
+  };
+  openSection('samplesHeader', 'samplesList');
+
+  $('samplesHeader').addEventListener('click', () => {
+    $('samplesHeader').classList.toggle('open');
+    $('samplesList').classList.toggle('open');
+  });
+  $('historyHeader').addEventListener('click', () => {
+    $('historyHeader').classList.toggle('open');
+    $('historyList').classList.toggle('open');
+    $('historyActions').classList.toggle('open');
+  });
+  $('clearHistoryBtn').addEventListener('click', clearHistory);
 
   state.panels.forEach(p => {
     const el = $(p.id);
@@ -185,6 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  renderHistory();
+  loadSamples();
   setSize(50);
   render();
 });
