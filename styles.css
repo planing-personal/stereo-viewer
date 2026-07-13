@@ -38,6 +38,7 @@ input[type="file"] { display: none; }
 .scroll-wheel-label { pointer-events: none; }
 
 .rotate-prompt { display: none; }
+#fullscreenBtn { display: none; }
 
 @keyframes rotate-phone {
   0%, 100% { transform: rotate(0deg); }
@@ -46,6 +47,7 @@ input[type="file"] { display: none; }
 
 @media (hover: none) and (pointer: coarse) {
   .scroll-wheel { display: flex; }
+  #fullscreenBtn { display: inline-block; }
 }
 
 @media (hover: none) and (pointer: coarse) and (orientation: landscape) {

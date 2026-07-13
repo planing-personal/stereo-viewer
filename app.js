@@ -20,53 +20,40 @@ function render() {
     el.style.setProperty('--zoom', state.zoom);
     el.style.transformOrigin = `${state.ox}% ${state.oy}%`;
   });
-
   zoomVal.textContent = state.zoom.toFixed(2);
 }
 
 function loadImage(idx, file) {
-  if (!file)
-    return;
-
+  if (!file) return;
   const r = new FileReader();
-
   r.onload = e => {
     const panel = state.panels[idx];
-
     const wrap = $(panel.wrapId);
     wrap.innerHTML = '';
-
     const img = document.createElement('img');
     img.src = e.target.result;
     img.alt = '';
     img.draggable = false;
-
     wrap.appendChild(img);
-
     panel.src = e.target.result;
 
     const p = $(panel.id);
     const hintContainer = p.querySelector('.hint-container');
-    if (hintContainer)
-       hintContainer.style.display = 'none';
+    if (hintContainer) hintContainer.style.display = 'none';
 
     render();
   };
-
   r.readAsDataURL(file);
 }
 
 function loadFromInput(idx, input) {
   if (!input.files?.[0]) return;
-  
   loadImage(idx, input.files[0]);
-
   input.value = '';
 }
 
 function swap() {
   const p0 = state.panels[0], p1 = state.panels[1];
-
   [p0.src, p1.src] = [p1.src, p0.src];
 
   const w0 = $(p0.wrapId), w1 = $(p1.wrapId);
@@ -82,10 +69,8 @@ function swap() {
   state.panels.forEach(p => {
     const el = $(p.id);
     const hasImg = !!el.querySelector('img');
-    
     const hintContainer = el.querySelector('.hint-container');
-    if (hintContainer)
-       hintContainer.style.display = hasImg ? 'none' : '';
+    if (hintContainer) hintContainer.style.display = hasImg ? 'none' : '';
   });
 
   render();
@@ -171,6 +156,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('mouseup', onUp);
   });
 
+  const fullscreenBtn = $('fullscreenBtn');
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', () => {
+    fullscreenBtn.textContent = document.fullscreenElement ? 'Exit' : 'Fullscreen';
+  });
+
   document.addEventListener('keydown', e => {
     if (e.ctrlKey || e.metaKey) return;
     if (e.key === '+' || e.key === '=') {
@@ -189,6 +186,5 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   setSize(50);
-  
   render();
 });
