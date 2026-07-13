@@ -37,7 +37,6 @@ input[type="file"] { display: none; }
 }
 .scroll-wheel-label { pointer-events: none; }
 
-.zoom-info { display: flex; }
 .rotate-prompt { display: none; }
 
 @keyframes rotate-phone {
@@ -45,8 +44,11 @@ input[type="file"] { display: none; }
   50% { transform: rotate(90deg); }
 }
 
-@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+@media (hover: none) and (pointer: coarse) {
   .scroll-wheel { display: flex; }
+}
+
+@media (hover: none) and (pointer: coarse) and (orientation: landscape) {
   .panels-wrapper { min-width: 500px; }
   #zoomText { display: none; }
 }
