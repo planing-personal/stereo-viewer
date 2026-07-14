@@ -331,8 +331,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const deltaY = wheelLastY - e.touches[0].clientY;
     wheelLastY = e.touches[0].clientY;
     state.zoom = Math.max(MIN_Z, Math.min(MAX_Z, state.zoom * (1 + deltaY * 0.005)));
-    state.ox = 50;
-    state.oy = 50;
     render();
   }, { passive: false });
 
@@ -343,8 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const deltaY = lastY - e.clientY;
       lastY = e.clientY;
       state.zoom = Math.max(MIN_Z, Math.min(MAX_Z, state.zoom * (1 + deltaY * 0.005)));
-      state.ox = 50;
-      state.oy = 50;
       render();
     };
     const onUp = () => {
