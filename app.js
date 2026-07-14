@@ -301,6 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const viewerEl = document.querySelector('.viewer');
+  let touchStart = null;
+  viewerEl.addEventListener('touchstart', e => {
+    touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, ox: state.ox, oy: state.oy };
+  }, { passive: true });
+
+  viewerEl.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!touchStart) return;
+    const r = viewerEl.getBoundingClientRect();
+    const t = e.touches[0];
+    state.ox = Math.max(0, Math.min(100, touchStart.ox + ((t.clientX - touchStart.x) / r.width) * 100));
+    state.oy = Math.max(0, Math.min(100, touchStart.oy + ((t.clientY - touchStart.y) / r.height) * 100));
+    render();
+  }, { passive: false });
+
+  viewerEl.addEventListener('touchend', () => { touchStart = null; });
+
   const wheel = $('scrollWheel');
   let wheelLastY = 0;
 
