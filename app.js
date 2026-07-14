@@ -363,8 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
       document.exitFullscreen();
     }
   });
+  const exitFullscreenBtn = $('exitFullscreenBtn');
+  exitFullscreenBtn.addEventListener('click', () => {
+    document.exitFullscreen();
+  });
   document.addEventListener('fullscreenchange', () => {
     fullscreenBtn.textContent = document.fullscreenElement ? 'Exit' : 'Fullscreen';
+    exitFullscreenBtn.classList.toggle('hidden', !document.fullscreenElement);
   });
 
   document.addEventListener('keydown', e => {
