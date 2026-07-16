@@ -5,95 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stereo Photography Guide</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="styles.css">
-<style>
-html { overflow: auto; }
-body { background: #111; color: #ccc; font-family: ui-sans-serif, system-ui, sans-serif; min-height: 100vh; }
-.hero-gradient {
-  background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0a0a14 100%);
-  border-bottom: 1px solid #333;
-}
-.card {
-  background: #1a1a2e;
-  border: 1px solid #333;
-  border-radius: 8px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.card:hover {
-  border-color: #6c63ff;
-  box-shadow: 0 0 20px rgba(108, 99, 255, 0.1);
-}
-.step-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #2a2a4a;
-  color: #6c63ff;
-  font-size: 13px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-.guide-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 36px;
-  flex-shrink: 0;
-}
-.eye-diagram {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 12px;
-  background: #0a0a14;
-  border-radius: 6px;
-  border: 1px solid #222;
-}
-.eye-circle {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  border: 2px solid #555;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  background: #111;
-}
-.eye-line {
-  flex: 1;
-  height: 2px;
-  background: #444;
-  position: relative;
-  max-width: 60px;
-}
-.image-pair-preview {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  border: 1px solid #333;
-  border-radius: 4px;
-  overflow: hidden;
-  max-width: 240px;
-}
-.image-pair-preview div {
-  aspect-ratio: 4/3;
-  background: #0a0a14;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: #555;
-}
-.image-pair-preview .left { background: #151525; }
-.image-pair-preview .right { background: #151525; }
-</style>
+<link rel="stylesheet" href="landing.css">
 </head>
 <body>
 
@@ -127,23 +39,12 @@ body { background: #111; color: #ccc; font-family: ui-sans-serif, system-ui, san
   </div>
 </div>
 
-<!-- How It Works -->
-<div class="px-4 py-12 border-b border-[#222]">
-  <div class="max-w-3xl mx-auto">
-    <h2 class="text-xl md:text-2xl font-light text-white mb-6 text-center">How It Works</h2>
-    <div class="card p-6">
-      <p class="text-[#aaa] leading-relaxed mb-4">
-        Your eyes are roughly <strong class="text-[#ddd]">2.5 inches (6.5 cm) apart</strong>, so each eye sees the world from a slightly different angle. The brain combines these two perspectives into a single image with depth perception.
-      </p>
-      <p class="text-[#aaa] leading-relaxed mb-4">
-        Stereo photographs capture this by taking <strong class="text-[#ddd]">two photos simultaneously</strong> from two lenses spaced the same distance apart. When each eye views its corresponding image, the brain reconstructs the depth illusion.
-      </p>
-      <div class="image-pair-preview mx-auto mt-6">
-        <div class="left">Left eye view</div>
-        <div class="right">Right eye view</div>
-      </div>
-      <p class="text-[#555] text-xs text-center mt-3">A typical stereo photo pair</p>
-    </div>
+<!-- CTA -->
+<div class="border-t border-[#222] px-4 py-12">
+  <div class="text-center">
+    <p class="text-[#888] text-sm mb-4">Ready to try it yourself?</p>
+    <a href="viewer.html"
+       class="inline-block bg-[#6c63ff] text-white border border-[#6c63ff] px-6 py-3 rounded cursor-pointer text-[14px] hover:bg-[#7b73ff] active:bg-[#5b53ee] no-underline font-medium">Open Stereo Viewer</a>
   </div>
 </div>
 
@@ -262,12 +163,23 @@ body { background: #111; color: #ccc; font-family: ui-sans-serif, system-ui, san
   </div>
 </div>
 
-<!-- CTA -->
-<div class="border-t border-[#222] px-4 py-12">
-  <div class="text-center">
-    <p class="text-[#888] text-sm mb-4">Ready to try it yourself?</p>
-    <a href="viewer.html"
-       class="inline-block bg-[#6c63ff] text-white border border-[#6c63ff] px-6 py-3 rounded cursor-pointer text-[14px] hover:bg-[#7b73ff] active:bg-[#5b53ee] no-underline font-medium">Open Stereo Viewer</a>
+<!-- How It Works -->
+<div class="px-4 py-12 border-b border-[#222]">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-light text-white mb-6 text-center">How It Works</h2>
+    <div class="card p-6">
+      <p class="text-[#aaa] leading-relaxed mb-4">
+        Your eyes are roughly <strong class="text-[#ddd]">2.5 inches (6.5 cm) apart</strong>, so each eye sees the world from a slightly different angle. The brain combines these two perspectives into a single image with depth perception.
+      </p>
+      <p class="text-[#aaa] leading-relaxed mb-4">
+        Stereo photographs capture this by taking <strong class="text-[#ddd]">two photos simultaneously</strong> from two lenses spaced the same distance apart. When each eye views its corresponding image, the brain reconstructs the depth illusion.
+      </p>
+      <div class="image-pair-preview mx-auto mt-6">
+        <div class="left">Left eye view</div>
+        <div class="right">Right eye view</div>
+      </div>
+      <p class="text-[#555] text-xs text-center mt-3">A typical stereo photo pair</p>
+    </div>
   </div>
 </div>
 

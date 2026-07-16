@@ -10,5 +10,4 @@ const SAMPLES = [
     leftImageUrl: 'samples/amsterdam_x.png',
     rightImageUrl: 'samples/amsterdam_y.png',
   },
-
 ];
