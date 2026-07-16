@@ -3,106 +3,281 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stereo Image Viewer</title>
+<title>Stereo Photography Guide</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="styles.css">
+<style>
+html { overflow: auto; }
+body { background: #111; color: #ccc; font-family: ui-sans-serif, system-ui, sans-serif; min-height: 100vh; }
+.hero-gradient {
+  background: linear-gradient(135deg, #0a0a14 0%, #1a1a2e 50%, #0a0a14 100%);
+  border-bottom: 1px solid #333;
+}
+.card {
+  background: #1a1a2e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: #6c63ff;
+  box-shadow: 0 0 20px rgba(108, 99, 255, 0.1);
+}
+.step-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #2a2a4a;
+  color: #6c63ff;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.guide-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  flex-shrink: 0;
+}
+.eye-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px;
+  background: #0a0a14;
+  border-radius: 6px;
+  border: 1px solid #222;
+}
+.eye-circle {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #555;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: #111;
+}
+.eye-line {
+  flex: 1;
+  height: 2px;
+  background: #444;
+  position: relative;
+  max-width: 60px;
+}
+.image-pair-preview {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 240px;
+}
+.image-pair-preview div {
+  aspect-ratio: 4/3;
+  background: #0a0a14;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #555;
+}
+.image-pair-preview .left { background: #151525; }
+.image-pair-preview .right { background: #151525; }
+</style>
 </head>
-<body class="font-sans bg-[#111] text-[#ccc] flex flex-col select-none h-screen overflow-hidden">
+<body>
 
-<div class="toolbar-menu-wrapper shrink-0 relative">
-<div class="toolbar-row flex">
-  <div class="toolbar flex-1 flex items-center px-4 py-2 bg-[#1a1a2e] border-b border-[#333]">
-    <div class="flex-1 flex items-center gap-2.5">
-      <button id="menuBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">☰</button>
-      <button id="fullscreenBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-3 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Fullscreen</button>
-    </div>
-    <div class="flex-1 flex items-center gap-2.5 justify-center">
-      <button id="swapBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-3 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Swap L/R</button>
-    </div>
-    <div class="flex-1 flex items-center gap-2.5 justify-end">
-      <div class="flex items-center gap-1.5">
-        <label class="text-[13px] text-[#888]">Size</label>
-        <input type="range" id="sizeRng" min="5" max="100" value="50" class="w-20 accent-[#6c63ff]">
-        <span id="sizeVal" class="text-[13px]">50%</span>
+<!-- Navigation Bar -->
+<div class="toolbar-menu-wrapper shrink-0 sticky top-0 z-[200]">
+  <div class="toolbar-row flex">
+    <div class="toolbar flex-1 flex items-center px-4 py-2 bg-[#1a1a2e] border-b border-[#333]">
+      <div class="flex items-center gap-2.5">
+        <span class="text-[#6c63ff] font-semibold text-[15px] tracking-wide">Stereo Viewer</span>
+      </div>
+      <div class="flex-1 flex items-center justify-end gap-2.5">
+        <a href="viewer.html"
+           class="bg-[#6c63ff] text-white border border-[#6c63ff] px-3 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#7b73ff] active:bg-[#5b53ee] no-underline">Stereo Viewer</a>
       </div>
     </div>
   </div>
-  <div class="zoom-info w-16 flex flex-col items-center justify-center bg-[#1a1a2e] border-b border-[#333] border-l border-[#333] text-xs text-[#555] tabular-nums">
-    <span id="zoomText">Zoom: </span>
-    <span id="zoomVal">1.00</span>
-  </div>
 </div>
 
-<div id="menuPanel" class="menu-panel">
-  <div class="menu-section">
-    <div class="menu-section-header" id="samplesHeader">Samples</div>
-    <div id="samplesList" class="menu-section-items"></div>
-  </div>
-  <div class="menu-section">
-    <div class="menu-section-header" id="historyHeader">History</div>
-    <div id="historyList" class="menu-section-items"></div>
-    <div class="menu-section-actions" id="historyActions">
-      <button id="clearHistoryBtn" class="menu-action-btn">Clear History</button>
+<!-- Hero Section -->
+<div class="hero-gradient px-4 py-10 lg:py-24">
+  <div class="max-w-4xl mx-auto text-center">
+    <h1 class="text-3xl md:text-5xl font-light text-white mb-4 tracking-tight">What Is Stereo Photography?</h1>
+    <p class="text-[#aaa] text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+      Stereo photography (stereoscopy) creates the illusion of three-dimensional depth by presenting two slightly offset images &mdash; one for each eye &mdash; mimicking the way human binocular vision naturally perceives the world.
+    </p>
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3 text-sm text-[#888]">
+      <span class="bg-[#1a1a2e] border border-[#333] px-3 py-1.5 rounded">📷 Twin-lens cameras</span>
+      <span class="bg-[#1a1a2e] border border-[#333] px-3 py-1.5 rounded">👁️ Binocular vision</span>
+      <span class="bg-[#1a1a2e] border border-[#333] px-3 py-1.5 rounded">🖼️ Side-by-side pairs</span>
     </div>
   </div>
 </div>
+
+<!-- How It Works -->
+<div class="px-4 py-12 border-b border-[#222]">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-light text-white mb-6 text-center">How It Works</h2>
+    <div class="card p-6">
+      <p class="text-[#aaa] leading-relaxed mb-4">
+        Your eyes are roughly <strong class="text-[#ddd]">2.5 inches (6.5 cm) apart</strong>, so each eye sees the world from a slightly different angle. The brain combines these two perspectives into a single image with depth perception.
+      </p>
+      <p class="text-[#aaa] leading-relaxed mb-4">
+        Stereo photographs capture this by taking <strong class="text-[#ddd]">two photos simultaneously</strong> from two lenses spaced the same distance apart. When each eye views its corresponding image, the brain reconstructs the depth illusion.
+      </p>
+      <div class="image-pair-preview mx-auto mt-6">
+        <div class="left">Left eye view</div>
+        <div class="right">Right eye view</div>
+      </div>
+      <p class="text-[#555] text-xs text-center mt-3">A typical stereo photo pair</p>
+    </div>
+  </div>
 </div>
 
-<div class="viewer-wrap flex-1 flex overflow-hidden">
-  <div class="viewer flex-1 flex overflow-hidden p-[10px] bg-[#0a0a14] items-center justify-center">
-    <div class="panels-wrapper flex gap-0 w-full max-w-full max-h-full min-h-[150px]" id="pw">
-      <div id="p0" class="flex-1 flex flex-col relative overflow-hidden bg-[#0a0a14] border-[10px] border-white min-h-[100px] border-r-[5px] rounded-tl-[6px] rounded-bl-[6px]">
-        <div class="hint-container h-full content-center p-[10px]">
-          <div class="text-center py-1">
-            <span class="text-white/30 text-2xl pointer-events-none z-[2] tracking-wider uppercase">Left</span>
-          </div>
-          <div class="py-1">
-            <span class="flex items-center justify-center text-[#444] text-sm pointer-events-none z-[1]">Drop LEFT image here</span>
-          </div>
-          <div class="text-center py-[14px]">
-            <button id="loadLeftBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Upload</button>
-            <input type="file" id="inpL" accept="image/*">
+<!-- Viewing Guide -->
+<div class="px-4 py-12">
+  <div class="max-w-5xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-light text-white mb-3 text-center">How to View Stereo Photos</h2>
+    <p class="text-[#888] text-sm text-center mb-10 max-w-xl mx-auto">
+      Two common techniques let you see the 3D effect without any special equipment.
+    </p>
+
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <!-- Parallel (Free-View) -->
+      <div class="card p-6 flex flex-col">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="guide-icon bg-[#0a3410] text-green-400">∥</div>
+          <div>
+            <h3 class="text-white text-lg font-medium">Parallel (Free-View)</h3>
+            <p class="text-[#888] text-xs mt-0.5">Also called "wall-eyed" viewing</p>
           </div>
         </div>
-        <div class="image-wrap flex-1 flex items-center overflow-hidden justify-end" id="w0"></div>
+
+        <p class="text-[#aaa] text-sm leading-relaxed mb-4">
+          Relax your eyes and look <strong class="text-[#ddd]">through</strong> the image as if focusing on a distant object. The two images will drift apart, then a third image will appear in the center in 3D.
+        </p>
+
+        <div class="eye-diagram mb-4">
+          <div class="eye-circle text-xs text-[#888]">L</div>
+          <div class="eye-line"></div>
+          <div class="flex items-center gap-1 text-[11px] text-[#555]">
+            <span class="bg-[#1a1a2e] px-2 py-0.5 rounded text-[10px] border border-[#333]">Left</span>
+          </div>
+          <div class="eye-line"></div>
+          <div class="flex items-center gap-1 text-[11px] text-[#555]">
+            <span class="bg-[#1a1a2e] px-2 py-0.5 rounded text-[10px] border border-[#333]">Right</span>
+          </div>
+          <div class="eye-line"></div>
+          <div class="eye-circle text-xs text-[#888]">R</div>
+        </div>
+
+        <ul class="space-y-2 text-sm text-[#aaa] mt-auto">
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">1</span>
+            <span>Place the pair at a comfortable distance (arm's length)</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">2</span>
+            <span>Look straight ahead, relax your eyes as if gazing at the horizon</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">3</span>
+            <span>Let the two images drift and overlap &mdash; a 3D image will snap into focus</span>
+          </li>
+        </ul>
       </div>
-      <div id="p1" class="flex-1 flex flex-col relative overflow-hidden bg-[#0a0a14] border-[10px] border-white min-h-[100px] border-l-[5px] rounded-tr-[6px] rounded-br-[6px]">
-        <div class="hint-container h-full content-center p-[10px]">
-          <div class="text-center py-1">
-            <span class="text-white/30 text-2xl pointer-events-none z-[2] tracking-wider uppercase">Right</span>
-          </div>
-          <div class="py-1">
-            <span class="flex items-center justify-center text-[#444] text-sm pointer-events-none z-[1]">Drop RIGHT image here</span>
-          </div>
-          <div class="text-center py-[14px]">
-            <button id="loadRightBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Upload</button>
-            <input type="file" id="inpR" accept="image/*">
+
+      <!-- Cross-Eyed -->
+      <div class="card p-6 flex flex-col">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="guide-icon bg-[#340a0a] text-red-400">X</div>
+          <div>
+            <h3 class="text-white text-lg font-medium">Cross-Eyed</h3>
+            <p class="text-[#888] text-xs mt-0.5">Images are swapped left↔right</p>
           </div>
         </div>
-        <div class="image-wrap flex-1 flex items-center overflow-hidden justify-start" id="w1"></div>
+
+        <p class="text-[#aaa] text-sm leading-relaxed mb-4">
+          Slightly cross your eyes so that your <strong class="text-[#ddd]">left eye looks at the right image</strong> and your <strong class="text-[#ddd]">right eye looks at the left image</strong>. The images will converge into a 3D view in the center.
+        </p>
+
+        <div class="eye-diagram mb-4">
+          <div class="eye-circle text-xs text-[#888]">L</div>
+          <div class="eye-line" style="position:relative;">
+            <span style="position:absolute;right:-4px;top:-14px;font-size:12px;color:#6c63ff;">╲</span>
+          </div>
+          <div class="flex items-center gap-1 text-[11px] text-[#555]">
+            <span class="bg-[#1a1a2e] px-2 py-0.5 rounded text-[10px] border border-[#333]">Right</span>
+          </div>
+          <div class="eye-line" style="position:relative;">
+            <span style="position:absolute;left:-4px;top:-14px;font-size:12px;color:#6c63ff;">╱</span>
+          </div>
+          <div class="eye-circle text-xs text-[#888]">R</div>
+        </div>
+
+        <ul class="space-y-2 text-sm text-[#aaa] mt-auto">
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">1</span>
+            <span>Hold the pair closer than arm's length</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">2</span>
+            <span>Gently cross your eyes until each image has a "ghost" neighbor</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <span class="step-number text-[11px]">3</span>
+            <span>The center pair will overlap &mdash; hold your focus and the 3D scene will appear</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Tip -->
+    <div class="card p-5 mt-6 bg-[#0a0a14] border-[#2a2a4a]">
+      <div class="flex items-start gap-3">
+        <span class="text-[#6c63ff] text-lg leading-none mt-0.5">💡</span>
+        <div>
+          <p class="text-[#ddd] text-sm font-medium mb-1">Pro tip</p>
+          <p class="text-[#888] text-sm leading-relaxed">
+            Start with the <strong class="text-[#aaa]">parallel</strong> method &mdash; it's more natural for most people. If you see a reversed-depth effect (things that should pop out go inward), try the <strong class="text-[#aaa]">cross-eyed</strong> method instead, or swap the left and right images. Our <a href="viewer.html" class="text-[#6c63ff] hover:text-[#7b73ff]">Stereo Viewer</a> has a handy Swap L/R button.
+          </p>
+        </div>
       </div>
     </div>
   </div>
-  <div class="scroll-wheel shrink-0 w-16 relative flex-col items-center justify-between py-[14px] select-none border-l border-[#333]" id="scrollWheel">
-    <span class="scroll-wheel-label text-[#555] text-[22px] font-light z-[1]">+</span>
-    <span class="scroll-wheel-label text-[#555] text-[22px] font-light z-[1]">−</span>
+</div>
+
+<!-- CTA -->
+<div class="border-t border-[#222] px-4 py-12">
+  <div class="text-center">
+    <p class="text-[#888] text-sm mb-4">Ready to try it yourself?</p>
+    <a href="viewer.html"
+       class="inline-block bg-[#6c63ff] text-white border border-[#6c63ff] px-6 py-3 rounded cursor-pointer text-[14px] hover:bg-[#7b73ff] active:bg-[#5b53ee] no-underline font-medium">Open Stereo Viewer</a>
   </div>
 </div>
-<div class="rotate-prompt fixed inset-0 z-[999] bg-[#0a0a14] text-[#888] items-center justify-center" id="rotatePrompt">
-  <div class="justify-items-center text-center">
-    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6c63ff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-4 animate-[rotate-phone_2s_ease-in-out_infinite]">
-      <path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-    </svg>
-    <p class="text-base">Rotate your device to landscape</p>
-    <button id="exitFullscreenBtn" class="mt-4 flex items-center gap-2 bg-[#2a2a4a] text-[#ddd] border border-[#444] px-4 py-2 rounded cursor-pointer text-[14px] hover:bg-[#3a3a5a] active:bg-[#222244] hidden">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-      </svg>
-      Exit Fullscreen
-    </button>
+
+<!-- Footer -->
+<div class="border-t border-[#222] px-4 py-6">
+  <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs text-[#555]">
+    <span>Stereo Viewer</span>
+    <span>Upload your own stereo pair or try the samples to get started.</span>
   </div>
 </div>
-  <script src="samples/samples.js"></script>
-  <script src="app.js"></script>
+
 </body>
 </html>
