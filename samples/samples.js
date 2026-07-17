@@ -9,5 +9,10 @@ const SAMPLES = [
     description: 'Amsterdam University',
     leftImageUrl: 'samples/amsterdam_x.png',
     rightImageUrl: 'samples/amsterdam_y.png',
+  },{
+    thumbnail: 'samples/lego-blue_thumbnail.png',
+    description: 'LEGO Blue',
+    leftImageUrl: 'samples/lego-blue_x.png',
+    rightImageUrl: 'samples/lego-blue_y.png',
   },
 ];

@@ -49,7 +49,7 @@
 </div>
 
 <div class="viewer-wrap flex-1 flex overflow-hidden">
-  <div class="viewer flex-1 flex overflow-hidden p-[10px] bg-[#0a0a14] items-center justify-center">
+  <div class="viewer flex-1 flex overflow-hidden p-[10px] bg-[#0a0a14] items-center justify-center touch-none">
     <div class="panels-wrapper flex gap-0 w-full max-w-full max-h-full min-h-[150px]" id="pw">
       <div id="p0" class="flex-1 flex flex-col relative overflow-hidden bg-[#0a0a14] border-[10px] border-white min-h-[100px] border-r-[5px] rounded-tl-[6px] rounded-bl-[6px]">
         <div class="hint-container h-full content-center p-[10px]">
@@ -61,7 +61,7 @@
           </div>
           <div class="text-center py-[14px]">
             <button id="loadLeftBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Upload</button>
-            <input type="file" id="inpL" accept="image/*">
+            <input type="file" id="inpL" accept="image/*" class="hidden">
           </div>
         </div>
         <div class="image-wrap flex-1 flex items-center overflow-hidden justify-end" id="w0"></div>
@@ -76,7 +76,7 @@
           </div>
           <div class="text-center py-[14px]">
             <button id="loadRightBtn" class="bg-[#2a2a4a] text-[#ddd] border border-[#444] px-2 py-1 rounded cursor-pointer text-[13px] whitespace-nowrap hover:bg-[#3a3a5a] active:bg-[#222244]">Upload</button>
-            <input type="file" id="inpR" accept="image/*">
+            <input type="file" id="inpR" accept="image/*" class="hidden">
           </div>
         </div>
         <div class="image-wrap flex-1 flex items-center overflow-hidden justify-start" id="w1"></div>
